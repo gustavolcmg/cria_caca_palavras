@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>WordCraft - Criador de Caça-Palavras</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&family=Orbitron:wght@700;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      user-select: none;
+      transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    body, html {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* =========================================================
+       TEMA ESCURO (DARK - PADRÃO)
+       ========================================================= */
+    body.theme-dark {
+      background-color: #090d16;
+      color: #f8fafc;
+    }
+    body.theme-dark .panel-config,
+    body.theme-dark .panel-view {
+      background-color: #131b2e;
+      border-color: #1e293b;
+    }
+    body.theme-dark .app-main-title {
+      font-family: 'Fredoka', cursive, sans-serif;
+      color: #38bdf8;
+      text-shadow: 0 4px 12px rgba(56, 189, 248, 0.25);
+    }
+    body.theme-dark .view-toolbar {
+      background-color: #0b1120;
+      border-bottom-color: #1e293b;
+    }
+    body.theme-dark .board-viewport {
+      background-color: #080c14;
+    }
+    body.theme-dark input[type="text"],
+    body.theme-dark input[type="number"],
+    body.theme-dark textarea,
+    body.theme-dark select {
+      background-color: #0b1120;
+      border-color: #334155;
+      color: #f8fafc;
+    }
+    body.theme-dark input:focus,
+    body.theme-dark textarea:focus,
+    body.theme-dark select:focus {
+      border-color: #38bdf8;
+    }
+    body.theme-dark .checkbox-group {
+      background-color: #0b1120;
+      border-color: #334155;
+    }
+    body.theme-dark .checkbox-label {
+      color: #e2e8f0;
+    }
+    body.theme-dark .checkbox-label input {
+      accent-color: #38bdf8;
+    }
+    body.theme-dark .btn-create {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+    }
+    body.theme-dark .btn-sec,
+    body.theme-dark .btn-tool {
+      background-color: #1e293b;
+      border-color: #334155;
+      color: #f8fafc;
+    }
+    body.theme-dark .btn-sec:hover:not(:disabled),
+    body.theme-dark .btn-tool:hover {
+      background-color: #334155;
+    }
+    body.theme-dark .btn-sec.active {
+      background-color: #0284c7;
+      border-color: #38bdf8;
+      color: #ffffff;
+    }
+    body.theme-dark .board-title {
+      color: #f8fafc;
+    }
+    body.theme-dark .word-pill {
+      background-color: #1e293b;
+      border-color: #334155;
+      color: #cbd5e1;
+    }
+    body.theme-dark .grid-cell.highlight-answer {
+      background-color: #38bdf8 !important;
+      color: #090d16 !important;
+    }
+
+    /* =========================================================
+       TEMA CLARO (LIGHT)
+       ========================================================= */
+    body.theme-light {
+      background-color: #f1f5f9;
+      color: #0f172a;
+    }
+    body.theme-light .panel-config,
+    body.theme-light .panel-view {
+      background-color: #ffffff;
+      border-color: #e2e8f0;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    }
+    body.theme-light .app-main-title {
+      font-family: 'Fredoka', cursive, sans-serif;
+      color: #0284c7;
+      text-shadow: 0 3px 8px rgba(2, 132, 199, 0.2);
+    }
+    body.theme-light label {
+      color: #64748b;
+    }
+    body.theme-light .view-toolbar {
+      background-color: #f8fafc;
+      border-bottom-color: #e2e8f0;
+    }
+    body.theme-light .board-viewport {
+      background-color: #f8fafc;
+    }
+    body.theme-light input[type="text"],
+    body.theme-light input[type="number"],
+    body.theme-light textarea,
+    body.theme-light select {
+      background-color: #ffffff;
+      border-color: #cbd5e1;
+      color: #0f172a;
+    }
+    body.theme-light input:focus,
+    body.theme-light textarea:focus,
+    body.theme-light select:focus {
+      border-color: #0284c7;
+    }
+    body.theme-light .checkbox-group {
+      background-color: #f8fafc;
+      border-color: #e2e8f0;
+    }
+    body.theme-light .checkbox-label {
+      color: #334155;
+    }
+    body.theme-light .checkbox-label input {
+      accent-color: #0284c7;
+    }
+    body.theme-light .btn-create {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+    }
+    body.theme-light .btn-sec,
+    body.theme-light .btn-tool {
+      background-color: #f1f5f9;
+      border-color: #cbd5e1;
+      color: #334155;
+    }
+    body.theme-light .btn-sec:hover:not(:disabled),
+    body.theme-light .btn-tool:hover {
+      background-color: #e2e8f0;
+    }
+    body.theme-light .btn-sec.active {
+      background-color: #0284c7;
+      border-color: #0284c7;
+      color: #ffffff;
+    }
+    body.theme-light .board-title {
+      color: #0f172a;
+    }
+    body.theme-light .word-pill {
+      background-color: #e2e8f0;
+      border-color: #cbd5e1;
+      color: #334155;
+    }
+    body.theme-light .status-badge {
+      background-color: #e2e8f0;
+      color: #475569;
+    }
+    body.theme-light .status-badge.highlight {
+      background-color: #0284c7;
+      color: #ffffff;
+    }
+    body.theme-light .grid-cell.highlight-answer {
+      background-color: #38bdf8 !important;
+      color: #082f49 !important;
+    }
+
+    /* =========================================================
+       TEMA CYBERPUNK (NEON / GLITCH)
+       ========================================================= */
+    body.theme-cyberpunk {
+      background-color: #05050d;
+      color: #00ffcc;
+      font-family: 'Orbitron', -apple-system, sans-serif;
+    }
+    body.theme-cyberpunk * {
+      font-family: 'Orbitron', -apple-system, sans-serif;
+    }
+    body.theme-cyberpunk .panel-config {
+      background-color: #0c0817;
+      border-color: #ff0055;
+      box-shadow: 0 0 20px rgba(255, 0, 85, 0.25), inset 0 0 15px rgba(255, 0, 85, 0.08);
+    }
+    body.theme-cyberpunk .panel-view {
+      background-color: #0c0817;
+      border-color: #00f0ff;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.25), inset 0 0 15px rgba(0, 240, 255, 0.08);
+    }
+    body.theme-cyberpunk .app-main-title {
+      font-family: 'Orbitron', monospace, sans-serif;
+      font-weight: 900;
+      color: #ffff00;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      position: relative;
+      display: inline-block;
+      text-shadow: 0 0 8px #ffff00, 0 0 20px #ff0055;
+    }
+    body.theme-cyberpunk .app-main-title::before,
+    body.theme-cyberpunk .app-main-title::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      clip: rect(0, 0, 0, 0);
+    }
+    body.theme-cyberpunk .app-main-title::before {
+      left: -2px;
+      text-shadow: 2px 0 #00f0ff;
+      animation: glitch-anim-1 2s infinite linear alternate-reverse;
+    }
+    body.theme-cyberpunk .app-main-title::after {
+      left: 2px;
+      text-shadow: -2px 0 #ff0055;
+      animation: glitch-anim-2 2.5s infinite linear alternate-reverse;
+    }
+
+    @keyframes glitch-anim-1 {
+      0% { clip: rect(10px, 9999px, 24px, 0); }
+      20% { clip: rect(32px, 9999px, 48px, 0); }
+      40% { clip: rect(6px, 9999px, 18px, 0); }
+      60% { clip: rect(25px, 9999px, 40px, 0); }
+      80% { clip: rect(15px, 9999px, 30px, 0); }
+      100% { clip: rect(2px, 9999px, 12px, 0); }
+    }
+    @keyframes glitch-anim-2 {
+      0% { clip: rect(22px, 9999px, 35px, 0); }
+      25% { clip: rect(5px, 9999px, 19px, 0); }
+      50% { clip: rect(30px, 9999px, 45px, 0); }
+      75% { clip: rect(12px, 9999px, 28px, 0); }
+      100% { clip: rect(18px, 9999px, 38px, 0); }
+    }
+
+    body.theme-cyberpunk label {
+      color: #ffaa00;
+      letter-spacing: 1px;
+    }
+    body.theme-cyberpunk input[type="text"],
+    body.theme-cyberpunk input[type="number"],
+    body.theme-cyberpunk textarea,
+    body.theme-cyberpunk select {
+      background-color: #05030a;
+      border-color: #9d00ff;
+      color: #00ffcc;
+      box-shadow: inset 0 0 8px rgba(157, 0, 255, 0.4);
+    }
+    body.theme-cyberpunk input:focus,
+    body.theme-cyberpunk textarea:focus,
+    body.theme-cyberpunk select:focus {
+      border-color: #00f0ff;
+      box-shadow: 0 0 10px #00f0ff, inset 0 0 10px rgba(0, 240, 255, 0.4);
+    }
+    body.theme-cyberpunk .checkbox-group {
+      background-color: #05030a;
+      border-color: #ff0055;
+      box-shadow: inset 0 0 8px rgba(255, 0, 85, 0.3);
+    }
+    body.theme-cyberpunk .checkbox-label {
+      color: #ff0055;
+      font-weight: 700;
+    }
+    body.theme-cyberpunk .checkbox-label input {
+      accent-color: #00f0ff;
+    }
+    body.theme-cyberpunk .btn-create {
+      background: linear-gradient(135deg, #ff0055, #ffaa00);
+      color: #05030a;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      box-shadow: 0 0 18px rgba(255, 0, 85, 0.7);
+      border: 1px solid #ffff00;
+    }
+    body.theme-cyberpunk .btn-create:hover {
+      box-shadow: 0 0 26px rgba(255, 170, 0, 0.9);
+    }
+    body.theme-cyberpunk .btn-sec,
+    body.theme-cyberpunk .btn-tool {
+      background-color: #120924;
+      border-color: #00f0ff;
+      color: #00f0ff;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+    }
+    body.theme-cyberpunk .btn-sec:hover:not(:disabled),
+    body.theme-cyberpunk .btn-tool:hover {
+      background-color: #00f0ff;
+      color: #05030a;
+      box-shadow: 0 0 15px #00f0ff;
+    }
+    body.theme-cyberpunk .btn-sec.active {
+      background-color: #39ff14;
+      border-color: #39ff14;
+      color: #05030a;
+      box-shadow: 0 0 15px #39ff14;
+    }
+    body.theme-cyberpunk .view-toolbar {
+      background-color: #05030a;
+      border-bottom-color: #00f0ff;
+    }
+    body.theme-cyberpunk .board-viewport {
+      background-color: #040208;
+    }
+    body.theme-cyberpunk .board-title {
+      color: #ffff00;
+      text-shadow: 0 0 12px rgba(255, 255, 0, 0.8), 0 0 25px rgba(255, 0, 85, 0.6);
+      letter-spacing: 2px;
+    }
+    body.theme-cyberpunk .word-pill {
+      background-color: #120924;
+      border-color: #ffaa00;
+      color: #ffaa00;
+      box-shadow: 0 0 8px rgba(255, 170, 0, 0.3);
+    }
+    body.theme-cyberpunk .status-badge {
+      background-color: #120924;
+      color: #9d00ff;
+      border: 1px solid #9d00ff;
+    }
+    body.theme-cyberpunk .status-badge.highlight {
+      background-color: #39ff14;
+      color: #05030a;
+      box-shadow: 0 0 10px #39ff14;
+    }
+    body.theme-cyberpunk .word-grid {
+      border: 3px solid #00f0ff;
+      box-shadow: 0 0 30px rgba(0, 240, 255, 0.4), 0 0 15px rgba(255, 0, 85, 0.3);
+    }
+    body.theme-cyberpunk .grid-cell {
+      border: 1px solid #1e1138;
+      background-color: #0c0817;
+      color: #00f0ff;
+      font-weight: 900;
+    }
+    body.theme-cyberpunk .grid-cell.highlight-answer {
+      background-color: #39ff14 !important;
+      color: #05030a !important;
+      font-weight: 900;
+      box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.6);
+      text-shadow: none;
+    }
+
+    /* =========================================================
+       LAYOUT GERAL & COMPONENTES
+       ========================================================= */
+    .app-container {
+      display: flex;
+      width: 100vw;
+      height: 100vh;
+      padding: 14px;
+      gap: 14px;
+    }
+
+    .panel-config {
+      flex: 0 0 390px;
+      height: calc(100vh - 28px);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border-width: 1px;
+      border-style: solid;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 4px;
+    }
+
+    .app-main-title {
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+
+    .theme-picker {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .select-theme {
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      outline: none;
+      border-width: 1px;
+      border-style: solid;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    input[type="text"], input[type="number"], textarea {
+      border-radius: 6px;
+      padding: 6px 9px;
+      font-size: 0.82rem;
+      outline: none;
+      border-width: 1px;
+      border-style: solid;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 7px 9px;
+      border-radius: 6px;
+      border-width: 1px;
+      border-style: solid;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.76rem;
+      cursor: pointer;
+      text-transform: none;
+    }
+
+    .checkbox-label input {
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+    }
+
+    .words-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-height: 0;
+    }
+
+    textarea {
+      flex: 1;
+      resize: none;
+      text-transform: uppercase;
+      line-height: 1.35;
+    }
+
+    .actions-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .btn-create {
+      border: none;
+      border-radius: 6px;
+      padding: 9px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-create:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-sec {
+      flex: 1;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-width: 1px;
+      border-style: solid;
+    }
+
+    .btn-sec:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .panel-view {
+      flex: 1;
+      height: calc(100vh - 28px);
+      border-radius: 14px;
+      border-width: 1px;
+      border-style: solid;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .view-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 16px;
+      border-bottom-width: 1px;
+      border-bottom-style: solid;
+    }
+
+    .view-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-badge {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .zoom-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-tool {
+      border-radius: 4px;
+      width: 28px;
+      height: 28px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-width: 1px;
+      border-style: solid;
+    }
+
+    .board-viewport {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    .board-wrapper {
+      transform-origin: center center;
+      transition: transform 0.15s ease-out;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      max-width: 100%;
+    }
+
+    .board-title {
+      font-weight: 800;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .word-grid {
+      background-color: #ffffff;
+      border: 2px solid #000000;
+      display: grid;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .grid-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #ffffff;
+      color: #000000;
+      font-weight: 800;
+      border: 1px solid #000000;
+      aspect-ratio: 1 / 1;
+    }
+
+    .word-bank-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+      max-width: 580px;
+    }
+
+    .word-pill {
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      border-width: 1px;
+      border-style: solid;
+    }
+
+    .empty-placeholder {
+      color: #64748b;
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-card {
+      background-color: #131b2e;
+      border: 1px solid #ef4444;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      padding: 20px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+    }
+
+    .modal-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #ef4444;
+      margin-bottom: 8px;
+    }
+
+    .modal-msg {
+      font-size: 0.85rem;
+      color: #cbd5e1;
+      line-height: 1.45;
+      margin-bottom: 16px;
+    }
+
+    .btn-modal {
+      width: 100%;
+      padding: 8px;
+      background-color: #ef4444;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    @media print {
+      body, html {
+        width: 100%;
+        height: auto;
+        overflow: visible;
+        background-color: #ffffff !important;
+        color: #000000 !important;
+      }
+
+      .panel-config, .view-toolbar, .modal-overlay {
+        display: none !important;
+      }
+
+      .app-container {
+        display: block;
+        width: 100%;
+        height: auto;
+        padding: 0;
+      }
+
+      .panel-view {
+        border: none !important;
+        background-color: transparent !important;
+        height: auto;
+        box-shadow: none !important;
+      }
+
+      .board-viewport {
+        background-color: transparent !important;
+        padding: 0;
+        overflow: visible;
+        display: block;
+      }
+
+      .board-wrapper {
+        transform: none !important;
+        gap: 16px;
+      }
+
+      .board-title {
+        color: #000000 !important;
+        text-shadow: none !important;
+      }
+
+      .word-grid {
+        box-shadow: none !important;
+        border: 2px solid #000000 !important;
+        margin: 10px auto;
+        page-break-inside: avoid;
+      }
+
+      .grid-cell {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        border: 1px solid #000000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .grid-cell.highlight-answer {
+        background-color: #93c5fd !important;
+        color: #000000 !important;
+      }
+
+      .word-bank-preview {
+        max-width: 100%;
+        margin-top: 14px;
+      }
+
+      .word-pill {
+        background-color: #ffffff !important;
+        border: 1px solid #000000 !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="theme-dark">
+
+  <div class="app-container">
+    <div class="panel-config">
+      <div class="header-top">
+        <h1 class="app-main-title" id="main-app-title" data-text="WordCraft">WordCraft</h1>
+        <div class="theme-picker">
+          <select id="select-theme" class="select-theme">
+            <option value="dark" selected>Escuro</option>
+            <option value="light">Claro</option>
+            <option value="cyberpunk">Cyberpunk</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" style="flex: 2.2;">
+          <label for="input-title">Título da Grade</label>
+          <input type="text" id="input-title" placeholder="Ex: Caça-Palavras" value="CAÇA-PALAVRAS">
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label for="input-title-size">Tam (px)</label>
+          <input type="number" id="input-title-size" min="12" max="64" value="22">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="input-rows">Linhas</label>
+          <input type="number" id="input-rows" min="4" max="30" value="10">
+        </div>
+        <div class="form-group">
+          <label for="input-cols">Colunas</label>
+          <input type="number" id="input-cols" min="4" max="30" value="10">
+        </div>
+      </div>
+
+      <div class="checkbox-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="chk-diagonal" checked>
+          Permitir palavras na diagonal
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="chk-inverted" checked>
+          Permitir palavras invertidas
+        </label>
+      </div>
+
+      <div class="words-area">
+        <label for="txt-words">Palavras (uma por linha ou vírgula)</label>
+        <textarea id="txt-words" placeholder="EXEMPLO&#10;GRADE&#10;LETRAS&#10;JOGO"></textarea>
+      </div>
+
+      <div class="actions-group">
+        <button class="btn-create" id="btn-generate">CRIAR CAÇA-PALAVRA</button>
+        <div class="btn-secondary-row">
+          <button class="btn-sec" id="btn-toggle-answer" disabled>
+            <span>Ver Gabarito</span>
+          </button>
+          <button class="btn-sec" id="btn-print" disabled>
+            <span>Imprimir</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-view">
+      <div class="view-toolbar">
+        <div class="view-status">
+          <span style="font-size: 0.8rem; font-weight: 700; opacity: 0.8;">GRADE RESULTANTE</span>
+          <span class="status-badge" id="badge-view">Normal</span>
+        </div>
+        <div class="zoom-controls">
+          <button class="btn-tool" id="btn-zoom-out" title="Reduzir">−</button>
+          <button class="btn-tool" id="btn-zoom-reset" title="Resetar" style="font-size: 0.75rem;">1x</button>
+          <button class="btn-tool" id="btn-zoom-in" title="Ampliar">+</button>
+        </div>
+      </div>
+
+      <div class="board-viewport" id="viewport">
+        <div class="board-wrapper" id="board-wrapper">
+          <span class="empty-placeholder">Defina os parâmetros e clique em "CRIAR CAÇA-PALAVRA"</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-alert">
+    <div class="modal-card">
+      <div class="modal-title" id="modal-title">Atenção</div>
+      <div class="modal-msg" id="modal-text">Mensagem do alerta</div>
+      <button class="btn-modal" id="btn-modal-close">Entendido</button>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      let currentZoom = 1;
+      let isAnswerMode = false;
+      let lastGeneratedState = null;
+
+      const body = document.body;
+      const selectTheme = document.getElementById('select-theme');
+      const mainAppTitle = document.getElementById('main-app-title');
+
+      const inputTitle = document.getElementById('input-title');
+      const inputTitleSize = document.getElementById('input-title-size');
+      const inputRows = document.getElementById('input-rows');
+      const inputCols = document.getElementById('input-cols');
+      const chkDiagonal = document.getElementById('chk-diagonal');
+      const chkInverted = document.getElementById('chk-inverted');
+      const txtWords = document.getElementById('txt-words');
+      const btnGenerate = document.getElementById('btn-generate');
+      const btnToggleAnswer = document.getElementById('btn-toggle-answer');
+      const btnPrint = document.getElementById('btn-print');
+      const badgeView = document.getElementById('badge-view');
+
+      const boardWrapper = document.getElementById('board-wrapper');
+      const viewport = document.getElementById('viewport');
+
+      const modalAlert = document.getElementById('modal-alert');
+      const modalText = document.getElementById('modal-text');
+      const btnModalClose = document.getElementById('btn-modal-close');
+
+      const btnZoomIn = document.getElementById('btn-zoom-in');
+      const btnZoomOut = document.getElementById('btn-zoom-out');
+      const btnZoomReset = document.getElementById('btn-zoom-reset');
+
+      // Troca de tema
+      selectTheme.addEventListener('change', function () {
+        body.classList.remove('theme-dark', 'theme-light', 'theme-cyberpunk');
+        body.classList.add('theme-' + this.value);
+      });
+
+      function showModal(msg) {
+        modalText.textContent = msg;
+        modalAlert.style.display = 'flex';
+      }
+
+      function closeModal() {
+        modalAlert.style.display = 'none';
+      }
+
+      btnModalClose.addEventListener('click', closeModal);
+
+      function updateZoom() {
+        boardWrapper.style.transform = 'scale(' + currentZoom + ')';
+      }
+
+      btnZoomIn.addEventListener('click', function () {
+        if (currentZoom < 2.5) {
+          currentZoom += 0.15;
+          updateZoom();
+        }
+      });
+
+      btnZoomOut.addEventListener('click', function () {
+        if (currentZoom > 0.4) {
+          currentZoom -= 0.15;
+          updateZoom();
+        }
+      });
+
+      btnZoomReset.addEventListener('click', function () {
+        currentZoom = 1;
+        updateZoom();
+      });
+
+      function cleanString(str) {
+        return str
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toUpperCase()
+          .replace(/[^A-Z]/g, '');
+      }
+
+      function getDirections(allowDiagonal, allowInverted) {
+        const dirs = [
+          [0, 1],
+          [1, 0]
+        ];
+
+        if (allowDiagonal) {
+          dirs.push([1, 1]);
+          dirs.push([-1, 1]);
+        }
+
+        if (allowInverted) {
+          const inv = dirs.map(function(d) { return [-d[0], -d[1]]; });
+          return dirs.concat(inv);
+        }
+
+        return dirs;
+      }
+
+      function createEmptyGrid(r, c) {
+        const grid = [];
+        for (let i = 0; i < r; i++) {
+          grid.push(new Array(c).fill(''));
+        }
+        return grid;
+      }
+
+      function canPlaceWord(grid, word, r, c, dr, dc, maxR, maxC) {
+        for (let i = 0; i < word.length; i++) {
+          const nr = r + i * dr;
+          const nc = c + i * dc;
+
+          if (nr < 0 || nr >= maxR || nc < 0 || nc >= maxC) {
+            return false;
+          }
+
+          const current = grid[nr][nc];
+          if (current !== '' && current !== word[i]) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      function placeWord(grid, solutionMask, word, r, c, dr, dc) {
+        for (let i = 0; i < word.length; i++) {
+          const nr = r + i * dr;
+          const nc = c + i * dc;
+          grid[nr][nc] = word[i];
+          solutionMask[nr][nc] = true;
+        }
+      }
+
+      function generateWordSearch() {
+        const title = inputTitle.value.trim() || 'CAÇA-PALAVRAS';
+        const titleSize = parseInt(inputTitleSize.value, 10) || 22;
+        const rows = parseInt(inputRows.value, 10);
+        const cols = parseInt(inputCols.value, 10);
+        const allowDiagonal = chkDiagonal.checked;
+        const allowInverted = chkInverted.checked;
+
+        if (isNaN(rows) || isNaN(cols) || rows < 4 || cols < 4) {
+          showModal('Defina uma grade com tamanho mínimo de 4x4.');
+          return;
+        }
+
+        const rawList = txtWords.value.split(/[\n,]+/);
+        const words = [];
+        const seen = {};
+
+        for (let i = 0; i < rawList.length; i++) {
+          const cleaned = cleanString(rawList[i]);
+          if (cleaned.length > 0 && !seen[cleaned]) {
+            seen[cleaned] = true;
+            words.push(cleaned);
+          }
+        }
+
+        if (words.length === 0) {
+          showModal('Insira ao menos uma palavra válida para compor a grade.');
+          return;
+        }
+
+        for (let i = 0; i < words.length; i++) {
+          const w = words[i];
+          if (!allowDiagonal && (w.length > rows && w.length > cols)) {
+            showModal('A palavra "' + w + '" (' + w.length + ' letras) não cabe na grade de ' + rows + 'x' + cols + '.');
+            return;
+          }
+          if (w.length > rows && w.length > cols && w.length > Math.min(rows, cols)) {
+            showModal('A palavra "' + w + '" (' + w.length + ' letras) ultrapassa o limite da grade ' + rows + 'x' + cols + '.');
+            return;
+          }
+        }
+
+        const totalLetters = words.reduce(function(acc, w) { return acc + w.length; }, 0);
+        const gridCapacity = rows * cols;
+        if (totalLetters > gridCapacity * 0.75 || words.length > gridCapacity / 2) {
+          showModal('A quantidade ou tamanho das palavras ultrapassa a capacidade suportada pela grade ' + rows + 'x' + cols + '.');
+          return;
+        }
+
+        const dirs = getDirections(allowDiagonal, allowInverted);
+        let grid = null;
+        let solutionMask = null;
+        let success = false;
+
+        for (let attempt = 0; attempt < 50; attempt++) {
+          grid = createEmptyGrid(rows, cols);
+          solutionMask = [];
+          for (let r = 0; r < rows; r++) {
+            solutionMask.push(new Array(cols).fill(false));
+          }
+
+          let allPlaced = true;
+          const sortedWords = words.slice().sort(function(a, b) { return b.length - a.length; });
+
+          for (let wIndex = 0; wIndex < sortedWords.length; wIndex++) {
+            const word = sortedWords[wIndex];
+            const positions = [];
+
+            for (let r = 0; r < rows; r++) {
+              for (let c = 0; c < cols; c++) {
+                for (let d = 0; d < dirs.length; d++) {
+                  const dr = dirs[d][0];
+                  const dc = dirs[d][1];
+                  if (canPlaceWord(grid, word, r, c, dr, dc, rows, cols)) {
+                    positions.push({ r: r, c: c, dr: dr, dc: dc });
+                  }
+                }
+              }
+            }
+
+            if (positions.length === 0) {
+              allPlaced = false;
+              break;
+            }
+
+            const chosen = positions[Math.floor(Math.random() * positions.length)];
+            placeWord(grid, solutionMask, word, chosen.r, chosen.c, chosen.dr, chosen.dc);
+          }
+
+          if (allPlaced) {
+            success = true;
+            break;
+          }
+        }
+
+        if (!success) {
+          showModal('Não foi possível posicionar todas as palavras com as configurações atuais. Tente aumentar a grade ou diminuir a lista.');
+          return;
+        }
+
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            if (grid[r][c] === '') {
+              grid[r][c] = alphabet[Math.floor(Math.random() * alphabet.length)];
+            }
+          }
+        }
+
+        lastGeneratedState = {
+          title: title,
+          titleSize: titleSize,
+          grid: grid,
+          solutionMask: solutionMask,
+          rows: rows,
+          cols: cols,
+          words: words
+        };
+
+        isAnswerMode = false;
+        btnToggleAnswer.disabled = false;
+        btnPrint.disabled = false;
+        btnToggleAnswer.classList.remove('active');
+        btnToggleAnswer.innerHTML = '<span>Ver Gabarito</span>';
+        badgeView.textContent = 'Normal';
+        badgeView.classList.remove('highlight');
+
+        renderGrid();
+      }
+
+      function renderGrid() {
+        if (!lastGeneratedState) return;
+
+        const { title, titleSize, grid, solutionMask, rows, cols, words } = lastGeneratedState;
+
+        boardWrapper.innerHTML = '';
+        currentZoom = 1;
+        updateZoom();
+
+        if (title) {
+          const titleEl = document.createElement('h2');
+          titleEl.className = 'board-title';
+          titleEl.style.fontSize = titleSize + 'px';
+          titleEl.textContent = title;
+          boardWrapper.appendChild(titleEl);
+        }
+
+        const gridEl = document.createElement('div');
+        gridEl.className = 'word-grid';
+        gridEl.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
+        gridEl.style.gridTemplateRows = 'repeat(' + rows + ', 1fr)';
+
+        const availableH = viewport.clientHeight - 110;
+        const availableW = viewport.clientWidth - 50;
+        const cellSize = Math.min(Math.floor(availableH / rows), Math.floor(availableW / cols), 38);
+
+        gridEl.style.width = (cellSize * cols) + 'px';
+        gridEl.style.height = (cellSize * rows) + 'px';
+
+        const fontSize = Math.max(12, Math.floor(cellSize * 0.55));
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const cell = document.createElement('div');
+            cell.className = 'grid-cell';
+            cell.style.fontSize = fontSize + 'px';
+            cell.textContent = grid[r][c];
+
+            if (isAnswerMode && solutionMask[r][c]) {
+              cell.classList.add('highlight-answer');
+            }
+
+            gridEl.appendChild(cell);
+          }
+        }
+
+        boardWrapper.appendChild(gridEl);
+
+        const wordBank = document.createElement('div');
+        wordBank.className = 'word-bank-preview';
+        words.forEach(function (w) {
+          const pill = document.createElement('span');
+          pill.className = 'word-pill';
+          pill.textContent = w;
+          wordBank.appendChild(pill);
+        });
+        boardWrapper.appendChild(wordBank);
+      }
+
+      btnToggleAnswer.addEventListener('click', function () {
+        if (!lastGeneratedState) return;
+        isAnswerMode = !isAnswerMode;
+        if (isAnswerMode) {
+          btnToggleAnswer.classList.add('active');
+          btnToggleAnswer.innerHTML = '<span>Ocultar Gabarito</span>';
+          badgeView.textContent = 'Gabarito';
+          badgeView.classList.add('highlight');
+        } else {
+          btnToggleAnswer.classList.remove('active');
+          btnToggleAnswer.innerHTML = '<span>Ver Gabarito</span>';
+          badgeView.textContent = 'Normal';
+          badgeView.classList.remove('highlight');
+        }
+        renderGrid();
+      });
+
+      btnPrint.addEventListener('click', function () {
+        if (!lastGeneratedState) return;
+        window.print();
+      });
+
+      btnGenerate.addEventListener('click', generateWordSearch);
+    })();
+  </script>
+</body>
+</html>
